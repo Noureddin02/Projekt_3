@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game - Play</title>
+    <link rel="stylesheet" href="Style.css" />
+  </head>
+  <body>
+    <div class="game-wrapper">
+      <!-- Topbar som på tegningen -->
+      <header class="game-header">
+        <div class="stats">
+          <span>Score: <strong id="score">00</strong></span>
+          <span>Time: <strong id="time">01:00</strong></span>
+        </div>
+
+        <div class="top-icons">
+          <button id="reset-game-btn" class="icon-btn" title="Reset Game">
+            ↻<br /><small>Reset</small>
+          </button>
+          <a href="Page.html" class="icon-btn" title="Home Page"
+            >⌂<br /><small>Home Page</small></a
+          >
+        </div>
+      </header>
+
+      <!-- Hovedområde: 24 kort + Card color switch boks -->
+      <main class="game-area">
+        <!-- 4x6 gitter til kortene -->
+        <div id="card-grid" class="card-grid"></div>
+
+        <!-- "Card box for card color switch" som på tegningen -->
+        <div class="color-switch-box">
+          <p>Card color switch</p>
+          <div class="color-options">
+            <button
+              class="color-choice theme-silver"
+              data-theme="theme-silver"
+              title="Sølv"
+            ></button>
+            <button
+              class="color-choice theme-dark"
+              data-theme="theme-dark"
+              title="Sort & Sølv"
+            ></button>
+            <button
+              class="color-choice theme-steel"
+              data-theme="theme-steel"
+              title="Stålgrå"
+            ></button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Popup: "Your score is" (tegningen nederst til venstre) -->
+    <div id="result-modal" class="modal hidden">
+      <div class="modal-content">
+        <!-- X-knap til Home Page -->
+        <div class="modal-top">
+          <a href="Page.html" class="close-btn">X</a>
+          <span class="close-label">Back to Home Page</span>
+        </div>
+
+        <h2>Your score is</h2>
+        <p class="final-score-text" id="current-run-score">0</p>
+
+        <!-- Tabel med plads 1, 2 og 3 -->
+        <table class="score-table">
+          <tr>
+            <td class="rank-cell">1</td>
+            <td id="modal-score-1">1000</td>
+          </tr>
+          <tr>
+            <td class="rank-cell">2</td>
+            <td id="modal-score-2">2000</td>
+          </tr>
+          <tr>
+            <td class="rank-cell">3</td>
+            <td id="modal-score-3">3500</td>
+          </tr>
+        </table>
+
+        <button id="play-again-btn" class="btn">Play Again</button>
+      </div>
+    </div>
+
+    <script>
+      // 12 par = 24 kort (passer til 4x6 kortene på din tegning)
+      const symbols = [
+        "🪽",
+        "𝄞",
+        "🌷",
+        "🍒",
+        "🧺",
+        "🧸",
+        "𝐒",
+        "🌸",
+        "🫧",
+        "🪼",
+        "🐾",
+        "🦢",
+      ];
+      let cardsArray = [];
+      let flippedCards = [];
+      let matchedPairs = 0;
+      let score = 0;
+      let timeLeft = 40;
+      let timerInterval = null;
+      let lockBoard = false;
+      let currentCardTheme = "theme-silver";
+
+      const cardGrid = document.getElementById("card-grid");
+      const scoreDisplay = document.getElementById("score");
+      const timeDisplay = document.getElementById("time");
+      const resultModal = document.getElementById("result-modal");
+
+      // Starter eller genstarter spillet
+      function startGame() {
+        // Nulstil variabler
+        score = 0;
+        timeLeft = 60;
+        matchedPairs = 0;
+        flippedCards = [];
+        lockBoard = false;
+
+        scoreDisplay.textContent = "00";
+        timeDisplay.textContent = timeLeft;
+        resultModal.classList.add("hidden");
+
+        // Lav par og bland kortene
+        cardsArray = symbols.concat(symbols);
+        cardsArray.sort(function () {
+          return 0.5 - Math.random();
+        });
+
+        // Byg kortene i HTML
+        cardGrid.innerHTML = "";
+        for (let i = 0; i < cardsArray.length; i++) {
+          const card = document.createElement("div");
+          card.classList.add("card", currentCardTheme);
+          card.dataset.symbol = cardsArray[i];
+          card.textContent = "?"; // Forside/bagside når kortet er lukket
+
+          card.addEventListener("click", flipCard);
+          cardGrid.appendChild(card);
+        }
+
+        // Start nedtælling på 60 sekunder
+        clearInterval(timerInterval);
+        timerInterval = setInterval(function () {
+          timeLeft--;
+          timeDisplay.textContent = timeLeft;
+
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      // Når man klikker på et kort
+      function flipCard() {
+        if (lockBoard) return;
+        if (
+          this.classList.contains("flipped") ||
+          this.classList.contains("matched")
+        )
+          return;
+
+        this.classList.add("flipped");
+        this.textContent = this.dataset.symbol;
+        flippedCards.push(this);
+
+        if (flippedCards.length === 2) {
+          checkForMatch();
+        }
+      }
+
+      // Tjek om de to vendte kort er ens
+      function checkForMatch() {
+        lockBoard = true;
+        const card1 = flippedCards[0];
+        const card2 = flippedCards[1];
+
+        if (card1.dataset.symbol === card2.dataset.symbol) {
+          // Match!
+          card1.classList.add("matched");
+          card2.classList.add("matched");
+          score += 150;
+          matchedPairs++;
+          scoreDisplay.textContent = score;
+          flippedCards = [];
+          lockBoard = false;
+
+          // Hvis alle 12 par er fundet
+          if (matchedPairs === symbols.length) {
+            score += timeLeft * 10; // Bonus for resterende tid
+            scoreDisplay.textContent = score;
+            endGame();
+          }
+        } else {
+          // Ikke ens - vend tilbage efter 0.8 sekund
+          setTimeout(function () {
+            card1.classList.remove("flipped");
+            card2.classList.remove("flipped");
+            card1.textContent = "?";
+            card2.textContent = "?";
+            flippedCards = [];
+            lockBoard = false;
+          }, 800);
+        }
+      }
+
+      // Afslut spillet og vis "Your score is"-popup
+      function endGame() {
+        clearInterval(timerInterval);
+        document.getElementById("current-run-score").textContent = score;
+
+        // Gem score i localStorage så Home Page også kan se den
+        let savedScores = JSON.parse(localStorage.getItem("memoryScores")) || [
+          1000, 2000, 3500,
+        ];
+        savedScores.push(score);
+        savedScores.sort(function (a, b) {
+          return b - a;
+        });
+        savedScores = savedScores.slice(0, 3); // Behold kun top 3
+        localStorage.setItem("memoryScores", JSON.stringify(savedScores));
+
+        // Opdater tabellen i popup-boksen
+        document.getElementById("modal-score-1").textContent = savedScores[0];
+        document.getElementById("modal-score-2").textContent = savedScores[1];
+        document.getElementById("modal-score-3").textContent = savedScores[2];
+
+        resultModal.classList.remove("hidden");
+      }
+
+      // Skift kortfarve via de 3 små felter nederst til højre
+      const colorButtons = document.querySelectorAll(".color-choice");
+      colorButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          currentCardTheme = this.dataset.theme;
+          const allCards = document.querySelectorAll(".card");
+          allCards.forEach(function (card) {
+            card.classList.remove("theme-silver", "theme-dark", "theme-steel");
+            card.classList.add(currentCardTheme);
+          });
+        });
+      });
+
+      // Knapper til Reset og Play Again
+      document
+        .getElementById("reset-game-btn")
+        .addEventListener("click", startGame);
+      document
+        .getElementById("play-again-btn")
+        .addEventListener("click", startGame);
+
+      // Start spillet når siden indlæses
+      startGame();
+    </script>
+  </body>
+</html>

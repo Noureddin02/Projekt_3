@@ -1,0 +1,345 @@
+/* Grundlæggende opsætning i sort og sølv */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background-color: #111111;
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ---------------- HOME PAGE (Page.html) ---------------- */
+.container {
+  width: 90%;
+  max-width: 850px;
+  background-color: #1b1b1b;
+  border: 3px solid #c0c0c0;
+  border-radius: 15px;
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.home-main {
+  flex: 2;
+  text-align: center;
+}
+
+.home-main h1 {
+  font-size: 28px;
+  color: #fefefe;
+  margin-bottom: 15px;
+}
+
+.brain-logo {
+  font-size: 70px;
+  margin: 15px auto;
+  width: 120px;
+  height: 120px;
+  line-height: 120px;
+  border: 2px solid #c0c0c0;
+  border-radius: 50%;
+  background-color: #262626;
+}
+
+.home-main h2 {
+  font-size: 32px;
+  color: #ffffff;
+  margin-bottom: 25px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Knapper i sølv og sort */
+.btn {
+  display: inline-block;
+  width: 180px;
+  padding: 12px 20px;
+  background-color: #c0c0c0;
+  color: #111111;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  border: 2px solid #ffffff;
+  border-radius: 25px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.btn:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+/* Score-boks til højre på Home Page */
+.score-sidebar {
+  flex: 1;
+  border: 2px solid #c0c0c0;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #141414;
+}
+
+.score-sidebar h3 {
+  text-align: center;
+  border-bottom: 2px solid #c0c0c0;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.score-sidebar ul {
+  list-style: none;
+}
+
+.score-sidebar li {
+  font-size: 18px;
+  padding: 8px 0;
+  border-bottom: 1px solid #333333;
+  color: #c0c0c0;
+}
+
+/* ---------------- GAME PAGE (Game.html) ---------------- */
+.game-wrapper {
+  width: 95%;
+  max-width: 900px;
+  background-color: #1b1b1b;
+  border: 3px solid #c0c0c0;
+  border-radius: 15px;
+  padding: 25px;
+}
+
+.game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #c0c0c0;
+  padding-bottom: 15px;
+  margin-bottom: 25px;
+}
+
+.stats {
+  display: flex;
+  gap: 40px;
+  font-size: 22px;
+  color: #c0c0c0;
+}
+
+.stats strong {
+  color: #ffffff;
+}
+
+.top-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.icon-btn {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 2px solid #c0c0c0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  text-decoration: none;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background-color: #c0c0c0;
+  color: #111111;
+}
+
+/* Spilleplade + farvevælger */
+.game-area {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+/* 6 kolonner x 4 rækker = 24 kort */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 80px);
+  gap: 12px;
+}
+
+.card {
+  width: 80px;
+  height: 100px;
+  border: 2px solid #c0c0c0;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* De 3 temaer til "Card color switch" */
+.card.theme-silver {
+  background-color: #8e8e8e;
+  color: #ffffff;
+}
+
+.card.theme-dark {
+  background-color: #262626;
+  color: #c0c0c0;
+}
+
+.card.theme-steel {
+  background-color: #4f545c;
+  color: #ffffff;
+}
+
+/* Når et kort er vendt eller matchet */
+.card.flipped,
+.card.matched {
+  background-color: #e6e6e6;
+  color: #111111;
+  border-color: #ffffff;
+}
+
+.card.matched {
+  opacity: 0.6;
+}
+
+/* Card box for card color switch */
+.color-switch-box {
+  border: 2px solid #c0c0c0;
+  border-radius: 10px;
+  padding: 15px;
+  background-color: #141414;
+  text-align: center;
+}
+
+.color-switch-box p {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #c0c0c0;
+}
+
+.color-options {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.color-choice {
+  width: 30px;
+  height: 40px;
+  border: 2px solid #ffffff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.color-choice.theme-silver {
+  background-color: #8e8e8e;
+}
+.color-choice.theme-dark {
+  background-color: #262626;
+}
+.color-choice.theme-steel {
+  background-color: #4f545c;
+}
+
+/* ---------------- RESULTAT POPUP (Your score is) ---------------- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-content {
+  background-color: #1b1b1b;
+  border: 3px solid #c0c0c0;
+  border-radius: 20px;
+  padding: 30px 40px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.modal-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.close-btn {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 28px;
+  border: 2px solid #c0c0c0;
+  border-radius: 6px;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.close-btn:hover {
+  background-color: #c0c0c0;
+  color: #111111;
+}
+
+.close-label {
+  font-size: 14px;
+  color: #c0c0c0;
+}
+
+.final-score-text {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 10px 0 20px 0;
+}
+
+/* Tabel med 1, 2, 3 */
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 25px;
+}
+
+.score-table td {
+  border: 2px solid #c0c0c0;
+  padding: 10px;
+  font-size: 18px;
+}
+
+.rank-cell {
+  width: 50px;
+  font-weight: bold;
+  background-color: #2b2b2b;
+  color: #ffffff;
+}

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game - Home Page</title>
+    <link rel="stylesheet" href="Style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Venstre/midterste del: Velkomst og knapper -->
+      <div class="home-main">
+        <h1>Welcome to</h1>
+
+        <!-- Hjerne-ikon som på tegningen -->
+        <div class="brain-logo">🤯</div>
+
+        <h2>Memory Game</h2>
+
+        <div class="button-group">
+          <!-- Linker videre til Game.html -->
+          <a href="Game.html" class="btn">Play</a>
+          <!-- Nulstiller gemte scores -->
+          <button id="reset-home-btn" class="btn">Reset</button>
+        </div>
+      </div>
+
+      <!-- Højre del: Score-boks -->
+      <aside class="score-sidebar">
+        <h3>Score</h3>
+        <ul id="home-score-list">
+          <li>1. <span id="top-score-1">0000</span></li>
+          <li>2. <span id="top-score-2">0010</span></li>
+          <li>3. <span id="top-score-3">2025</span></li>
+        </ul>
+      </aside>
+    </div>
+
+    <script>
+
+      // Henter gemte scores fra browseren, når siden åbnes
+      function loadHighscores() {
+        let scores = JSON.parse(localStorage.getItem("memoryScores")) || [
+          2025, 10, 0,
+        ];
+
+        // Sorterer så højeste score står øverst
+        scores.sort(function (a, b) {
+          return b - a;
+        });
+
+        document.getElementById("top-score-1").textContent = String(
+          scores[0] || 0,
+        ).padStart(4, "0");
+        document.getElementById("top-score-2").textContent = String(
+          scores[1] || 0,
+        ).padStart(4, "0");
+        document.getElementById("top-score-3").textContent = String(
+          scores[2] || 0,
+        ).padStart(4, "0");
+      }
+
+      // Reset-knap på forsiden nulstiller highscore-listen
+      document
+        .getElementById("reset-home-btn")
+        .addEventListener("click", function () {
+          localStorage.removeItem("memoryScores");
+          document.getElementById("top-score-1").textContent = "0000";
+          document.getElementById("top-score-2").textContent = "0000";
+          document.getElementById("top-score-3").textContent = "0000";
+          alert("Alle gemte scores er nulstillet!");
+        });
+
+      // Kør funktionen med det samme
+      loadHighscores();
+    </script>
+  </body>
+</html>
